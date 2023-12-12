@@ -1,0 +1,34 @@
+[
+  {
+    "label": "create",
+    "metadata": {
+      "name": "first experiment",
+      "status": "active",
+      "note": "anything here"
+    },
+    "ingredients": [
+      {
+        "label": "create",
+        "ingredient": 1,
+        "value": 10
+      },
+      {
+        "label": "create",
+        "ingredient": 2,
+        "value": 15
+      }
+    ],
+    "process_parameters": [
+      {
+        "label": "create",
+        "pp": 1,
+        "value": 10
+      },
+      {
+        "label": "create",
+        "pp": 2,
+        "value": 10
+      }
+    ]
+  }
+]
