@@ -1,21 +1,21 @@
 import { Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ExperimentIngredient } from '../entity/experiment_ingredient.entity';
+import { ExpPpCondition } from '../entity/exp_pp_cond.entity';
 import { Repository } from 'typeorm';
 import { DatabaseContext } from 'src/DatabaseContext';
 
 @Injectable({ scope: Scope.REQUEST })
-export class ExpIngService {
+export class ExpPpCondService {
   constructor(
-    @InjectRepository(ExperimentIngredient)
-    private readonly expIngRepo: Repository<ExperimentIngredient>,
+    @InjectRepository(ExpPpCondition)
+    private readonly expPpCondRepo: Repository<ExpPpCondition>,
     private readonly db: DatabaseContext,
   ) {}
 
   async findOneById(id: string) {
-    const entity = await this.expIngRepo
+    const entity = await this.expPpCondRepo
       .createQueryBuilder('entity')
-      .leftJoinAndSelect('entity.experiment', 'experiment')
+      .leftJoinAndSelect('entity.exp_pp', 'exp_pp')
       .where('entity.id = :id', { id })
       .getOne();
 
@@ -29,46 +29,49 @@ export class ExpIngService {
     return entity;
   }
 
-  async create(expIng, experimentId): Promise<ExperimentIngredient> {
+  async create(expPpCond, expPpId): Promise<ExpPpCondition> {
     const queryRunner = this.db.queryRunner;
-    const experiment = queryRunner.manager.create('experiments', {
-      id: experimentId,
+    const expPp = queryRunner.manager.create('experiment_Pps', {
+      id: expPpId,
     });
-    const entity = await this.expIngRepo
+    const entity = await this.expPpCondRepo
       .createQueryBuilder('entity')
       .where({
-        experiment: {
-          id: experimentId,
+        exp_pp: {
+          id: expPpId,
         },
-        ingredient: expIng.ingredient,
+        condition: expPpCond.condition,
       })
       .getOne();
 
     if (entity) {
       console.log('error');
     }
-    try {
-      const newExpIng = queryRunner.manager.create(this.expIngRepo.target, {
-        value: expIng.value,
-        ingredient: expIng.ingredient,
-        experiment: experiment,
-      });
 
-      const savedExpIng = await queryRunner.manager.save(newExpIng);
-      return savedExpIng;
+    try {
+      const newExpPpCond = queryRunner.manager.create(
+        this.expPpCondRepo.target,
+        {
+          value: expPpCond.value,
+          condition: expPpCond.condition,
+          exp_pp: expPp,
+        },
+      );
+
+      console.log(newExpPpCond);
+      return await queryRunner.manager.save(newExpPpCond);
     } catch (error) {
       console.error('Error occurred:', error);
     }
   }
 
-  async update(expIng, updateDto): Promise<ExperimentIngredient> {
+  async update(expPpCond, updateDto): Promise<ExpPpCondition> {
     const queryRunner = this.db.queryRunner;
     if (updateDto.value !== undefined) {
-      expIng.value = updateDto.value;
+      expPpCond.value = updateDto.value;
     }
     try {
-      const savedExpIng = await queryRunner.manager.save(expIng);
-      return savedExpIng;
+      return await queryRunner.manager.save(expPpCond);
     } catch (error) {
       console.error('Error occurred:', error);
     }
@@ -76,7 +79,7 @@ export class ExpIngService {
 
   async updateDeleteStatus(id: string, isDeleted: boolean) {
     const queryRunner = this.db.queryRunner;
-    const entity = await this.expIngRepo.findOne({ where: { id } });
+    const entity = await this.expPpCondRepo.findOne({ where: { id } });
 
     if (!entity) {
       console.log('No entity found');

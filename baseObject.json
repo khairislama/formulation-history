@@ -2,9 +2,9 @@
   {
     "label": "create",
     "metadata": {
-      "name": "first experiment",
+      "name": "first experiment with all relations",
       "status": "active",
-      "note": "anything here"
+      "note": "all relations test "
     },
     "ingredients": [
       {
@@ -22,12 +22,72 @@
       {
         "label": "create",
         "pp": 1,
-        "value": 10
+        "value": 10,
+        "conditions": [
+          {
+            "label": "create",
+            "condition": 1,
+            "value": 5
+          },
+          {
+            "label": "create",
+            "condition": 2,
+            "value": 5
+          }
+        ]
       },
       {
         "label": "create",
         "pp": 2,
-        "value": 10
+        "value": 10,
+        "conditions": [
+          {
+            "label": "create",
+            "condition": 1,
+            "value": 5
+          },
+          {
+            "label": "create",
+            "condition": 2,
+            "value": 5
+          }
+        ]
+      }
+    ],
+    "measurements": [
+      {
+        "label": "create",
+        "measurement": 1,
+        "value": 10,
+        "conditions": [
+          {
+            "label": "create",
+            "condition": 3,
+            "value": 5
+          },
+          {
+            "label": "create",
+            "condition": 4,
+            "value": 5
+          }
+        ]
+      },
+      {
+        "label": "create",
+        "measurement": 2,
+        "value": 10,
+        "conditions": [
+          {
+            "label": "create",
+            "condition": 3,
+            "value": 5
+          },
+          {
+            "label": "create",
+            "condition": 4,
+            "value": 5
+          }
+        ]
       }
     ]
   }

@@ -1,3 +1,5 @@
+import { ExpMeasCondition } from 'src/modules/exp_meas_conditions/entity/exp_meas_cond.entity';
+import { ExpPpCondition } from 'src/modules/exp_pp_conditions/entity/exp_pp_cond.entity';
 import { ExperimentIngredient } from 'src/modules/experiment_ingredients/entity/experiment_ingredient.entity';
 import { ExperimentMeasurement } from 'src/modules/experiment_measurements/entity/experiment_measurement.entity';
 import { ExperimentProcessParameter } from 'src/modules/experiment_process_parameters/entity/experiment_pp.entity';
@@ -38,6 +40,11 @@ export class Experiment {
   )
   experimentProcessParameters: ExperimentProcessParameter[];
 
+  @OneToMany(() => ExpPpCondition, (expPpCond) => expPpCond.experiment, {
+    onDelete: 'CASCADE',
+  })
+  expPpCondition: ExpPpCondition[];
+
   @OneToMany(
     () => ExperimentMeasurement,
     (experimentMeasurement) => experimentMeasurement.experiment,
@@ -46,6 +53,11 @@ export class Experiment {
     },
   )
   experimentMeasurements: ExperimentMeasurement[];
+
+  @OneToMany(() => ExpMeasCondition, (expPpCond) => expPpCond.experiment, {
+    onDelete: 'CASCADE',
+  })
+  expMeasCondition: ExpMeasCondition[];
 
   @Column({ type: 'boolean', default: false })
   is_deleted: boolean;

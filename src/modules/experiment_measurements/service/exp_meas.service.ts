@@ -72,19 +72,21 @@ export class ExpMeasService {
     }
   }
 
-  async delete(id: string) {
+  async updateDeleteStatus(id: string, isDeleted: boolean) {
     const queryRunner = this.db.queryRunner;
-    const entity = await this.expMeasRepo.findOne({ where: { id: id } });
+    const entity = await this.expMeasRepo.findOne({ where: { id } });
 
     if (!entity) {
-      console.log('no entity');
+      console.log('No entity found');
+      return null; // or throw an error if needed
     }
 
     try {
-      entity.is_deleted = true;
+      entity.is_deleted = isDeleted;
       return await queryRunner.manager.save(entity);
     } catch (error) {
       console.error('Error occurred:', error);
+      throw error; // Rethrow the error if needed
     }
   }
 }

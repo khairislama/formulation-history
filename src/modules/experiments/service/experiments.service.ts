@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Experiment } from '../entity/experiment.entity';
 import { DatabaseContext } from 'src/DatabaseContext';
 import { ExpIngService } from 'src/modules/experiment_ingredients/service/exp_ing.service';
 import { ExpPpService } from 'src/modules/experiment_process_parameters/service/exp_pp.service';
+import { ExpMeasService } from 'src/modules/experiment_measurements/service/exp_meas.service';
+import { ExpPpCondService } from 'src/modules/exp_pp_conditions/service/exp_pp_cond.service';
+import { ExpMeasCondService } from 'src/modules/exp_meas_conditions/service/exp_meas_cond.service';
 
 @Injectable()
 export class ExperimentsService {
@@ -14,6 +17,9 @@ export class ExperimentsService {
     private readonly db: DatabaseContext,
     private readonly expIngService: ExpIngService,
     private readonly expPpService: ExpPpService,
+    private readonly expMeasService: ExpMeasService,
+    private readonly expPpCondService: ExpPpCondService,
+    private readonly expMeasCondService: ExpMeasCondService,
   ) {}
 
   async process(experiments) {
@@ -52,10 +58,12 @@ export class ExperimentsService {
       where: { id: experiment.id },
     });
     if (experiment.metadata) {
-      experimentToUpdate.name = experiment.name ?? experimentToUpdate.name;
-      experimentToUpdate.note = experiment.note ?? experimentToUpdate.note;
+      experimentToUpdate.name =
+        experiment.metadata.name ?? experimentToUpdate.name;
+      experimentToUpdate.note =
+        experiment.metadata.note ?? experimentToUpdate.note;
       experimentToUpdate.status =
-        experiment.status ?? experimentToUpdate.status;
+        experiment.metadata.status ?? experimentToUpdate.status;
     }
     const savedExperiment = await queryRunner.manager.save(experimentToUpdate);
 
@@ -76,11 +84,49 @@ export class ExperimentsService {
     }
     if (experiment.process_parameters) {
       for (const processParameter of experiment.process_parameters) {
-        await this.processEntityAssociation(
+        const result = await this.processEntityAssociation(
           processParameter,
           experimentId,
           this.expPpService,
         );
+        if (
+          result &&
+          'conditions' in processParameter &&
+          processParameter.conditions &&
+          processParameter.conditions.length > 0
+        ) {
+          for (const condition of processParameter.conditions) {
+            await this.processEntityAssociation(
+              condition,
+              result.id,
+              this.expPpCondService,
+            );
+          }
+        }
+      }
+    }
+    if (experiment.measurements) {
+      for (const measurement of experiment.measurements) {
+        const result = await this.processEntityAssociation(
+          measurement,
+          experimentId,
+          this.expMeasService,
+        );
+
+        if (
+          result &&
+          'conditions' in measurement &&
+          measurement.conditions &&
+          measurement.conditions.length > 0
+        ) {
+          for (const condition of measurement.conditions) {
+            await this.processEntityAssociation(
+              condition,
+              result.id,
+              this.expMeasCondService,
+            );
+          }
+        }
       }
     }
   }
@@ -118,13 +164,21 @@ export class ExperimentsService {
       return await service.create(entity, experimentId);
     }
     if (operation === 'update') {
-      const relationToUpdate = await service.findOneById(entity.id);
+      let relationToUpdate;
+      if ('idRelation' in entity) {
+        relationToUpdate = await service.findOneById(entity.idRelation);
+      } else {
+        throw new BadRequestException({
+          message: 'Id association is needed when updating',
+          error: 'ID_ASSOCIATION_NOT_FOUND',
+        });
+      }
 
       return await service.update(relationToUpdate, entity);
     }
   }
 
   private async deleteEntity(entity, service: any) {
-    return await service.delete(entity.idRelation);
+    return await service.updateDeleteStatus(entity.idRelation, true);
   }
 }

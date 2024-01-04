@@ -1,0 +1,81 @@
+[
+  {
+    "id": "3e68576d-be69-483a-b1ac-c5c55c7120c5",
+    "label": "update",
+    "metadata": {
+      "name": "Trigger is fixed now start the rollback engineering process"
+    },
+    "ingredients": [
+      {
+        "idRelation": "b2803c11-cfeb-4a89-a09e-88f6eb3025c6",
+        "label": "update",
+        "value": 1
+      },
+      {
+        "idRelation": "15933767-4ead-4e2f-b9fc-04234cef8c90",
+        "label": "update",
+        "value": 1
+      }
+    ],
+    "process_parameters": [
+      {
+        "idRelation": "055a029c-3a63-423c-9488-52247fb0c447",
+        "label": "update",
+        "value": 1,
+        "conditions": [
+          {
+            "idRelation": "5434147c-e602-4bc6-848f-ca19d427210c",
+            "label": "update",
+            "value": 1
+          },
+          {
+            "idRelation": "939db1bf-052d-4e90-9110-3f812ced5a0b",
+            "label": "update",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "label": "create",
+        "pp": 3,
+        "value": 10
+      }
+    ],
+    "measurements": [
+      {
+        "idRelation": "3154d5ed-37b6-4a93-a385-db6ae2424394",
+        "label": "update",
+        "value": 1,
+        "conditions": [
+          {
+            "idRelation": "eb13fc23-b628-452a-9698-e684cc850e4f",
+            "label": "update",
+            "value": 1
+          },
+          {
+            "idRelation": "f61ccdfd-7e80-4bad-97b8-53ef17acadbc",
+            "label": "update",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "idRelation": "979995f6-5a3d-4420-a2e5-8bd117494629",
+        "label": "update",
+        "value": 1,
+        "conditions": [
+          {
+            "idRelation": "bb32539c-c602-4002-9376-2e28d6d300b0",
+            "label": "update",
+            "value": 1
+          },
+          {
+            "label": "create",
+            "condition": 3,
+            "value": 1
+          }
+        ]
+      }
+    ]
+  }
+]

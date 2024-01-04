@@ -1,3 +1,4 @@
+import { ExpMeasCondition } from 'src/modules/exp_meas_conditions/entity/exp_meas_cond.entity';
 import { Experiment } from 'src/modules/experiments/entity/experiment.entity';
 import {
   Entity,
@@ -5,6 +6,7 @@ import {
   ManyToOne,
   JoinColumn,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('experiment_measurements')
@@ -28,13 +30,13 @@ export class ExperimentMeasurement {
   @Column({ type: 'boolean', default: false })
   is_deleted: boolean;
 
-  //   @OneToMany(
-  //     () => ExpMeasCondition,
-  //     (expMeasCondition) => expMeasCondition.exp_meas,
-  //     {
-  //       cascade: true,
-  //       onDelete: 'CASCADE',
-  //     },
-  //   )
-  //   expMeasConditions: ExpMeasCondition[];
+  @OneToMany(
+    () => ExpMeasCondition,
+    (expMeasCondition) => expMeasCondition.exp_meas,
+    {
+      cascade: true,
+      onDelete: 'CASCADE',
+    },
+  )
+  expMeasConditions: ExpMeasCondition[];
 }

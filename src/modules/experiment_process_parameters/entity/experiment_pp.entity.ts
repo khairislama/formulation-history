@@ -1,3 +1,4 @@
+import { ExpPpCondition } from 'src/modules/exp_pp_conditions/entity/exp_pp_cond.entity';
 import { Experiment } from 'src/modules/experiments/entity/experiment.entity';
 import {
   Entity,
@@ -5,6 +6,7 @@ import {
   ManyToOne,
   JoinColumn,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('experiment_Pps')
@@ -25,10 +27,10 @@ export class ExperimentProcessParameter {
   @Column('double precision')
   value: number;
 
-  // @OneToMany(() => ExpPpCondition, (expPpCondition) => expPpCondition.exp_pp, {
-  //   onDelete: 'CASCADE',
-  // })
-  // expPpConditions: ExpPpCondition[];
+  @OneToMany(() => ExpPpCondition, (expPpCondition) => expPpCondition.exp_pp, {
+    onDelete: 'CASCADE',
+  })
+  expPpConditions: ExpPpCondition[];
 
   @Column({ type: 'boolean', default: false })
   is_deleted: boolean;
